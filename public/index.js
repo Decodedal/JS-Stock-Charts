@@ -6,21 +6,21 @@ async function main() {
 
 
     let data = await fetch('https://api.twelvedata.com/time_series?symbol=GME,MSFT,DIS,BNTX&interval=1min&apikey=44924b3388f340179f8ea015ef7cb09f')
-    let result = data.json()
-    console.log(result)
+    let result = await data.json()
+     console.log(result)
 
    const { GME, MSFT, DIS, BNTX } = result;
 
    const stocks = [GME, MSFT, DIS, BNTX];
-
+   console.log(stocks[0].values)
 
 // var ctx = document.getElementById('myChart').getContext('2d');
 new Chart(timeChartCanvas.getContext('2d'), {
     type: 'line',
     data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: stocks[0].values.map(value => value.datetime),
         datasets: [{
-            label: '# of Votes',
+            label: 'anything',
             data: [12, 19, 3, 5, 2, 3],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
@@ -52,7 +52,7 @@ new Chart(timeChartCanvas.getContext('2d'), {
 
                                                  
 // stocks[0].values.map(value => value.datetime )
-console.log(GME.values)
+
 }
 
 main()
