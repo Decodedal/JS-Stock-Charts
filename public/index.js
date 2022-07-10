@@ -5,41 +5,44 @@ async function main() {
     const averagePriceChartCanvas = document.querySelector('#average-price-chart');
 
 
-    let data = await fetch('https://api.twelvedata.com/time_series?symbol=GME,MSFT,DIS,BNTX&interval=1min&apikey=44924b3388f340179f8ea015ef7cb09f')
-    let result = await data.json()
-     console.log(result)
+    // let data = await fetch('https://api.twelvedata.com/time_series?symbol=GME,MSFT,DIS,BNTX&interval=1min&apikey=44924b3388f340179f8ea015ef7cb09f')
+    // let result = await data.json()
+    //  console.log(result)
 
-   const { GME, MSFT, DIS, BNTX } = result;
+   const { GME, MSFT, DIS, BNTX } = mockData;
 
    const stocks = [GME, MSFT, DIS, BNTX];
-   console.log(stocks[0].values)
+//    console.log(stocks[0].values)
+   
+   function getColor(stock){
+    if(stock === "GME"){
+        return 'rgba(61, 161, 61, 0.7)'
+    }
+    if(stock === "MSFT"){
+        return 'rgba(209, 4, 25, 0.7)'
+    }
+    if(stock === "DIS"){
+        return 'rgba(18, 4, 209, 0.7)'
+    }
+    if(stock === "BNTX"){
+        return 'rgba(166, 43, 158, 0.7)'
+    }
+}
 
+stocks.forEach(stock => stock.values.reverse())
 // var ctx = document.getElementById('myChart').getContext('2d');
 new Chart(timeChartCanvas.getContext('2d'), {
     type: 'line',
     data: {
         labels: stocks[0].values.map(value => value.datetime),
-        datasets: [{
-            label: 'anything',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                // 'rgba(54, 162, 235, 0.2)',
-                // 'rgba(255, 206, 86, 0.2)',
-                // 'rgba(75, 192, 192, 0.2)',
-                // 'rgba(153, 102, 255, 0.2)',
-                // 'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                // 'rgba(54, 162, 235, 1)',
-                // 'rgba(255, 206, 86, 1)',
-                // 'rgba(75, 192, 192, 1)',
-                // 'rgba(153, 102, 255, 1)',
-                // 'rgba(255, 159, 64, 1)'
-            ],
+        datasets: stocks.map(stock =>({    
+            label: stock.meta.symbol,
+            data:stock.values.map(value => parseFloat(value.high)),
+            backgroundColor: getColor(stock.meta.symbol),
+            borderColor: getColor(stock.meta.symbol)
+          }))
             // borderWidth: 1
-        }]
+        
      },
     // options: {
     //     scales: {
@@ -52,7 +55,36 @@ new Chart(timeChartCanvas.getContext('2d'), {
 
                                                  
 // stocks[0].values.map(value => value.datetime )
+new Chart(highestPriceChartCanvas.getContext('2d'),{
 
+    type:'bar',
+    data:{
+    labels:stocks.map(stock => stock.meta.symbol), 
+    datasets: stocks.map(stock =>({  
+    label: stock.meta.symbol,  
+    data:stocks.map(stock=> findLargest(stock)),
+    backgroundColor: getColor(stock.meta.symbol),
+    borderColor: getColor(stock.meta.symbol)
+    }))
+    }
+})
+function findLargest(item){
+    let arr = item.values.map(c => parseFloat(c.high))
+    console.log(arr)
+    let high = 0;
+for (let num in arr){
+   
+    if (arr[num] > high){
+        high = arr[num]
+        
+    }
+  }
+  console.log(high)
+  return high
+}
+findLargest(stocks[0])
+console.log(stocks.map(stock => stock.meta.symbol))
 }
 
 main()
+
