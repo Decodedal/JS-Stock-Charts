@@ -71,17 +71,18 @@ new Chart(highestPriceChartCanvas.getContext('2d'),{
 function findLargest(item){
     let arr = item.values.map(c => parseFloat(c.high))
     console.log(arr)
-    let high = 0;
-for (let num in arr){
+//     let high = 0;
+// for (let num in arr){
    
-    if (arr[num] > high){
-        high = arr[num]
-        
+//     if (arr[num] > high){
+//         high = arr[num]
+   let high = Math.max(...arr)     
+   console.log(high)
+   return high
     }
-  }
-  console.log(high)
-  return high
-}
+//   }
+
+// }
 findLargest(stocks[0])
 console.log(stocks.map(stock => stock.meta.symbol))
 }
